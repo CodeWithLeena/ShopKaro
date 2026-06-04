@@ -64,13 +64,6 @@ Admin Panel: http://127.0.0.1:8000/admin/
 
 ---
 
-## 🔐 LOGIN CREDENTIALS
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin (Full Access) | admin | admin123 |
-| Demo Seller | seller1 | seller123 |
-
 ---
 
 ## 📁 FOLDER STRUCTURE
@@ -157,4 +150,5 @@ A: `python manage.py runserver 8080` try karo
 
 ---
 
-Made with ❤️ in India | ShopKaro © 2024
+ShopKaro © 2026
+A Full-Featured E-Commerce Platform Built with Django & Python
