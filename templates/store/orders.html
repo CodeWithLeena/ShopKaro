@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}My Orders - ShopKaro{% endblock %}
+
+{% block content %}
+<h1 style="font-size:22px; font-weight:700; margin-bottom:15px;">My Orders</h1>
+{% if orders %}
+  {% for order in orders %}
+  <div style="background:#fff; border-radius:4px; margin-bottom:12px; overflow:hidden;">
+    <div style="padding:15px 20px; background:#f8f9fa; border-bottom:1px solid #e0e0e0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div style="font-size:13px; color:#878787;">
+        ORDER PLACED: {{ order.created_at|date:"d M Y" }}
+        <span style="margin:0 10px;">|</span>
+        TOTAL: <strong style="color:#212121;">₹{{ order.total|floatformat:0 }}</strong>
+        <span style="margin:0 10px;">|</span>
+        ORDER #{{ order.order_number }}
+      </div>
+      <a href="{% url 'order_detail' order.order_number %}" style="color:#2874f0; font-size:13px; font-weight:600;">View Details →</a>
+    </div>
+    {% for item in order.items.all %}
+    <div style="padding:15px 20px; display:flex; gap:15px; align-items:center; border-bottom:1px solid #f1f3f6;">
+      {% if item.product.images.first %}
+        <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}" style="width:60px; height:60px; object-fit:contain;">
+      {% else %}
+        <div style="width:60px; height:60px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:24px;">📦</div>
+      {% endif %}
+      <div style="flex:1;">
+        <div style="font-size:14px; color:#212121; font-weight:500; margin-bottom:4px;">{{ item.product.name }}</div>
+        <div style="font-size:13px; color:#878787;">Qty: {{ item.quantity }} × ₹{{ item.price|floatformat:0 }}</div>
+      </div>
+      <div>
+        <span style="padding:5px 12px; border-radius:15px; font-size:13px; font-weight:600;
+          {% if order.status == 'delivered' %}background:#e8f5e9; color:#388e3c;
+          {% elif order.status == 'cancelled' %}background:#ffebee; color:#d32f2f;
+          {% elif order.status == 'shipped' or order.status == 'out_for_delivery' %}background:#e3f2fd; color:#1565c0;
+          {% else %}background:#fff3e0; color:#ff6f00;{% endif %}">
+          {% if order.status == 'out_for_delivery' %}🚴 Out for Delivery
+          {% elif order.status == 'delivered' %}✅ Delivered
+          {% elif order.status == 'shipped' %}📦 Shipped
+          {% elif order.status == 'cancelled' %}❌ Cancelled
+          {% elif order.status == 'pending' %}⏳ Order Placed
+          {% elif order.status == 'confirmed' %}✔️ Confirmed
+          {% else %}{{ order.get_status_display }}{% endif %}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+{% else %}
+<div style="background:#fff; border-radius:4px; padding:60px; text-align:center;">
+  <div style="font-size:70px; margin-bottom:15px;">📦</div>
+  <h2 style="font-size:22px; margin-bottom:10px;">No orders yet!</h2>
+  <p style="color:#878787; margin-bottom:20px;">You haven't placed any orders yet.</p>
+  <a href="{% url 'product_list' %}" class="btn btn-primary" style="padding:14px 40px;">Start Shopping</a>
+</div>
+{% endif %}
+{% endblock %}

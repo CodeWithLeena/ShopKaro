@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}ShopKaro - India Ka Apna Bazaar{% endblock %}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #2874f0;
+    --primary-dark: #1a5dc8;
+    --secondary: #ff6161;
+    --accent: #fb641b;
+    --green: #26a541;
+    --yellow: #f0c14b;
+    --dark: #212121;
+    --gray: #878787;
+    --light-gray: #f1f3f6;
+    --border: #e0e0e0;
+    --white: #ffffff;
+    --success: #388e3c;
+    --warning: #ff9f00;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Arial,sans-serif; background:#f1f3f6; color:#212121; font-size:14px; }
+  a { text-decoration:none; color:inherit; }
+
+  /* NAVBAR */
+  .navbar { background:var(--primary); padding:0; position:sticky; top:0; z-index:1000; box-shadow:0 2px 4px rgba(0,0,0,.2); }
+  .navbar-top { display:flex; align-items:center; gap:10px; padding:10px 20px; max-width:1400px; margin:0 auto; }
+  .navbar-brand { color:#fff; font-size:22px; font-weight:700; white-space:nowrap; }
+  .navbar-brand span { color:#ffe500; font-style:italic; font-size:11px; display:block; margin-top:-4px; }
+  .search-box { flex:1; display:flex; max-width:600px; }
+  .search-box input { flex:1; padding:10px 15px; border:none; font-size:14px; outline:none; border-radius:4px 0 0 4px; }
+  .search-box button { padding:10px 20px; background:#ff9f00; border:none; cursor:pointer; border-radius:0 4px 4px 0; }
+  .search-box button i { color:#fff; font-size:16px; }
+  .nav-actions { display:flex; align-items:center; gap:5px; margin-left:auto; }
+  .nav-btn { color:#fff; padding:8px 16px; border-radius:4px; display:flex; flex-direction:column; align-items:center; font-size:12px; cursor:pointer; transition:.2s; white-space:nowrap; background:transparent; border:none; font-family:inherit; }
+  .nav-btn:hover { background:rgba(255,255,255,.15); }
+  .nav-btn i { font-size:18px; margin-bottom:2px; }
+  .nav-btn .badge { background:var(--secondary); color:#fff; border-radius:50%; padding:2px 5px; font-size:10px; position:relative; }
+
+  /* CATEGORY BAR */
+  .cat-bar { background:#fff; border-bottom:1px solid #e0e0e0; }
+  .cat-bar-inner { display:flex; overflow-x:auto; gap:0; max-width:1400px; margin:0 auto; scrollbar-width:none; }
+  .cat-bar-inner::-webkit-scrollbar { display:none; }
+  .cat-link { padding:12px 18px; font-size:13px; font-weight:500; white-space:nowrap; color:#212121; border-bottom:2px solid transparent; transition:.2s; }
+  .cat-link:hover { color:var(--primary); border-bottom-color:var(--primary); }
+
+  /* MAIN */
+  .container { max-width:1400px; margin:0 auto; padding:0 15px; }
+  .main-content { padding:15px 0; }
+
+  /* CARDS */
+  .product-card { background:#fff; border-radius:4px; overflow:hidden; transition:box-shadow .2s; cursor:pointer; }
+  .product-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.15); }
+  .product-card img { width:100%; height:200px; object-fit:contain; padding:10px; background:#fff; }
+  .product-card-body { padding:10px; }
+  .product-card-body h3 { font-size:13px; color:#212121; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; margin-bottom:5px; }
+  .product-rating { color:#388e3c; font-size:12px; background:#388e3c; color:#fff; padding:2px 6px; border-radius:3px; display:inline-flex; align-items:center; gap:3px; }
+  .product-price { font-size:18px; font-weight:700; color:#212121; margin:5px 0 2px; }
+  .product-price .original { font-size:13px; color:#878787; text-decoration:line-through; margin-left:6px; font-weight:400; }
+  .product-price .discount { font-size:13px; color:#388e3c; margin-left:4px; font-weight:600; }
+  .product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:15px; }
+
+  /* SECTION */
+  .section { background:#fff; margin-bottom:15px; border-radius:4px; overflow:hidden; }
+  .section-header { display:flex; justify-content:space-between; align-items:center; padding:15px 20px; border-bottom:1px solid #f1f3f6; }
+  .section-header h2 { font-size:20px; font-weight:700; }
+  .section-header a { color:var(--primary); font-size:13px; }
+  .section-body { padding:15px 20px; }
+
+  /* BANNER SLIDER */
+  .banner-slider { position:relative; overflow:hidden; border-radius:4px; background:#fff; margin-bottom:15px; }
+  .banner-slides { display:flex; transition:transform .5s ease; }
+  .banner-slide { min-width:100%; position:relative; }
+  .banner-slide img { width:100%; height:280px; object-fit:cover; }
+  .banner-slide .banner-text { position:absolute; left:50px; top:50%; transform:translateY(-50%); color:#fff; }
+  .banner-slide .banner-text h1 { font-size:36px; font-weight:800; text-shadow:2px 2px 4px rgba(0,0,0,.5); }
+  .banner-slide .banner-text p { font-size:18px; margin:8px 0 15px; }
+  .banner-btn { padding:12px 30px; background:var(--accent); color:#fff; border:none; border-radius:4px; font-size:15px; cursor:pointer; font-weight:600; }
+  .slider-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.8); border:none; width:40px; height:60px; cursor:pointer; font-size:20px; z-index:10; }
+  .slider-btn.prev { left:0; border-radius:0 4px 4px 0; }
+  .slider-btn.next { right:0; border-radius:4px 0 0 4px; }
+  .slider-dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.2s; }
+  .dot.active { background:#fff; }
+
+  /* ALERTS */
+  .messages { position:fixed; top:70px; right:20px; z-index:9999; max-width:350px; }
+  .alert { padding:12px 16px; border-radius:4px; margin-bottom:8px; font-size:13px; display:flex; align-items:center; gap:8px; box-shadow:0 2px 8px rgba(0,0,0,.2); animation:slideIn .3s ease; }
+  @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:none;opacity:1} }
+  .alert-success { background:#388e3c; color:#fff; }
+  .alert-error { background:#d32f2f; color:#fff; }
+  .alert-info { background:var(--primary); color:#fff; }
+  .alert-warning { background:#ff9f00; color:#fff; }
+  .alert-close { margin-left:auto; cursor:pointer; background:none; border:none; color:inherit; font-size:16px; }
+
+  /* BUTTONS */
+  .btn { padding:10px 20px; border-radius:4px; border:none; cursor:pointer; font-size:14px; font-weight:600; transition:.2s; }
+  .btn-primary { background:var(--accent); color:#fff; }
+  .btn-primary:hover { background:#e55b10; }
+  .btn-secondary { background:#ff9f00; color:#fff; }
+  .btn-secondary:hover { background:#e68f00; }
+  .btn-outline { background:#fff; border:1px solid var(--primary); color:var(--primary); }
+  .btn-outline:hover { background:var(--primary); color:#fff; }
+  .btn-sm { padding:7px 14px; font-size:12px; }
+  .btn-danger { background:#d32f2f; color:#fff; }
+
+  /* BADGES */
+  .badge-discount { background:var(--secondary); color:#fff; padding:2px 6px; border-radius:3px; font-size:11px; font-weight:600; }
+  .badge-new { background:var(--green); color:#fff; padding:2px 6px; border-radius:3px; font-size:11px; font-weight:600; }
+  .badge-oos { background:#878787; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px; }
+
+  /* WISHLIST HEART */
+  .wish-btn { background:none; border:none; cursor:pointer; font-size:20px; color:#878787; transition:.2s; }
+  .wish-btn.active, .wish-btn:hover { color:var(--secondary); }
+
+  /* FOOTER */
+  footer { background:#172337; color:#fff; margin-top:20px; }
+  .footer-top { display:grid; grid-template-columns:repeat(4,1fr); gap:30px; padding:40px 40px 20px; max-width:1400px; margin:0 auto; }
+  .footer-col h4 { color:#878787; font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-bottom:15px; }
+  .footer-col a { display:block; color:#b0b0b0; font-size:13px; margin-bottom:8px; }
+  .footer-col a:hover { color:#fff; }
+  .footer-bottom { border-top:1px solid #2a3f5f; padding:20px 40px; text-align:center; color:#878787; font-size:12px; }
+
+  /* UTILS */
+  .flex { display:flex; } .items-center { align-items:center; } .gap-10 { gap:10px; }
+  .text-green { color:var(--green); } .text-red { color:#d32f2f; } .text-gray { color:#878787; }
+  .font-bold { font-weight:700; } .mt-10 { margin-top:10px; } .mb-10 { margin-bottom:10px; }
+  .p-20 { padding:20px; } .text-center { text-align:center; }
+  .stars { color:#ff9f00; font-size:13px; }
+
+  @media(max-width:768px) {
+    .navbar-top { flex-wrap:wrap; }
+    .search-box { order:3; flex:0 0 100%; }
+    .footer-top { grid-template-columns:repeat(2,1fr); }
+    .product-grid { grid-template-columns:repeat(2,1fr); }
+    .banner-slide img { height:160px; }
+    .banner-slide .banner-text { left:15px; }
+    .banner-slide .banner-text h1 { font-size:20px; }
+  }
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-top">
+    <a href="{% url 'home' %}" class="navbar-brand">
+      🛒 ShopKaro
+      <span>India Ka Apna Bazaar</span>
+    </a>
+    <div class="search-box">
+      <form action="{% url 'search' %}" method="GET" style="display:flex;width:100%">
+        <input type="text" name="q" placeholder="Search for products, brands and more..." value="{{ request.GET.q }}">
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
+    <div class="nav-actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}" class="nav-btn">
+          <i class="fas fa-user"></i>
+          <span>{{ user.first_name|default:user.username }}</span>
+        </a>
+        {% if user.profile.is_seller %}
+        <a href="{% url 'seller_dashboard' %}" class="nav-btn">
+          <i class="fas fa-store"></i>
+          <span>Seller</span>
+        </a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="nav-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      {% else %}
+        <a href="{% url 'login' %}" class="nav-btn">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+        <a href="{% url 'register' %}" class="nav-btn">
+          <i class="fas fa-user-plus"></i>
+          <span>Register</span>
+        </a>
+      {% endif %}
+      <a href="{% url 'wishlist' %}" class="nav-btn">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist {% if wishlist_count %}<span class="badge">{{ wishlist_count }}</span>{% endif %}</span>
+      </a>
+      <a href="{% url 'cart' %}" class="nav-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Cart {% if cart_count %}<span class="badge">{{ cart_count }}</span>{% endif %}</span>
+      </a>
+    </div>
+  </div>
+  <!-- Category Bar -->
+  <div class="cat-bar">
+    <div class="cat-bar-inner container">
+      {% for cat in all_categories %}
+      <a href="{% url 'category_products' cat.slug %}" class="cat-link">
+        {% if cat.icon %}<i class="fas {{ cat.icon }}"></i> {% endif %}{{ cat.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</nav>
+
+<!-- MESSAGES -->
+<div class="messages">
+{% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">
+    <span>{{ message }}</span>
+    <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+  </div>
+{% endfor %}
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-col">
+      <h4>About</h4>
+      <a href="#">About ShopKaro</a>
+      <a href="#">Careers</a>
+      <a href="#">Press</a>
+      <a href="#">Blog</a>
+      <a href="#">Investor Relations</a>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <a href="#">Payments</a>
+      <a href="#">Shipping</a>
+      <a href="#">Cancellation & Returns</a>
+      <a href="#">FAQ</a>
+      <a href="#">Report Infringement</a>
+    </div>
+    <div class="footer-col">
+      <h4>Policy</h4>
+      <a href="#">Return Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Security</a>
+      <a href="#">Privacy</a>
+      <a href="#">Sitemap</a>
+    </div>
+    <div class="footer-col">
+      <h4>Social</h4>
+      <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+      <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
+      <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+      <h4 style="margin-top:15px">SELL ON SHOPKARO</h4>
+      <a href="{% url 'register' %}">Become a Seller</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 ShopKaro.com — India Ka Apna Bazaar | Made with ❤️ in India</p>
+  </div>
+</footer>
+
+<script>
+// Auto-hide alerts
+setTimeout(() => {
+  document.querySelectorAll('.alert').forEach(el => {
+    el.style.opacity = '0'; el.style.transition = '.5s';
+    setTimeout(() => el.remove(), 500);
+  });
+}, 4000);
+
+// Banner Slider
+const slider = document.querySelector('.banner-slides');
+if (slider) {
+  let cur = 0;
+  const slides = slider.children.length;
+  const dots = document.querySelectorAll('.dot');
+  
+  function goTo(n) {
+    cur = (n + slides) % slides;
+    slider.style.transform = `translateX(-${cur * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+  
+  document.querySelector('.slider-btn.prev')?.addEventListener('click', () => goTo(cur - 1));
+  document.querySelector('.slider-btn.next')?.addEventListener('click', () => goTo(cur + 1));
+  dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+  setInterval(() => goTo(cur + 1), 4000);
+}
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

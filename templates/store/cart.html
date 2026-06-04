@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}My Cart - ShopKaro{% endblock %}
+
+{% block content %}
+<h1 style="font-size:22px; font-weight:700; margin-bottom:15px;">My Cart ({{ cart.total_items }} items)</h1>
+
+{% if items %}
+<div style="display:grid; grid-template-columns:1fr 340px; gap:15px;">
+  <!-- CART ITEMS -->
+  <div>
+    {% for item in items %}
+    <div style="background:#fff; border-radius:4px; padding:20px; margin-bottom:10px; display:flex; gap:20px; align-items:flex-start;">
+      <a href="{{ item.product.get_absolute_url }}">
+        {% if item.product.images.first %}
+          <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}" style="width:100px; height:100px; object-fit:contain;">
+        {% else %}
+          <div style="width:100px; height:100px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:40px;">📦</div>
+        {% endif %}
+      </a>
+      <div style="flex:1;">
+        <a href="{{ item.product.get_absolute_url }}" style="font-size:15px; color:#212121; font-weight:400; display:block; margin-bottom:5px;">{{ item.product.name }}</a>
+        {% if item.product.brand %}
+        <div style="color:#878787; font-size:12px; margin-bottom:8px;">Brand: {{ item.product.brand }}</div>
+        {% endif %}
+        <div style="font-size:20px; font-weight:700; margin-bottom:8px;">₹{{ item.product.price|floatformat:0 }}</div>
+        {% if item.product.original_price %}
+        <div style="font-size:13px; color:#878787; margin-bottom:8px;">
+          <span style="text-decoration:line-through;">₹{{ item.product.original_price|floatformat:0 }}</span>
+          <span style="color:#388e3c; margin-left:6px;">{{ item.product.discount_percent }}% off</span>
+        </div>
+        {% endif %}
+        <div style="color:#388e3c; font-size:13px; margin-bottom:10px;">Free Delivery</div>
+        <!-- Quantity -->
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="display:flex; align-items:center; border:1px solid #e0e0e0; border-radius:4px; overflow:hidden;">
+            <button onclick="updateQty({{ item.id }}, {{ item.quantity|add:'-1' }})" style="width:32px; height:32px; background:#f8f9fa; border:none; cursor:pointer; font-size:16px;">-</button>
+            <span id="qty-{{ item.id }}" style="padding:0 15px; font-size:14px; font-weight:600;">{{ item.quantity }}</span>
+            <button onclick="updateQty({{ item.id }}, {{ item.quantity|add:'1' }})" style="width:32px; height:32px; background:#f8f9fa; border:none; cursor:pointer; font-size:16px;">+</button>
+          </div>
+          <span id="sub-{{ item.id }}" style="color:#212121; font-weight:600; font-size:15px;">₹{{ item.subtotal|floatformat:0 }}</span>
+          <a href="{% url 'remove_from_cart' item.id %}" style="color:#878787; font-size:13px; margin-left:10px;">
+            🗑️ Remove
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- PRICE SUMMARY -->
+  <div>
+    <div style="background:#fff; border-radius:4px; padding:20px; position:sticky; top:80px;">
+      <h3 style="font-size:14px; color:#878787; font-weight:400; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px; padding-bottom:10px; border-bottom:1px dashed #e0e0e0;">Price Details</h3>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px;">
+        <span>Price ({{ cart.total_items }} items)</span>
+        <span>₹{{ cart.total_price|floatformat:0 }}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px;">
+        <span>Discount</span>
+        <span style="color:#388e3c;">-₹0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px;">
+        <span>Delivery Charges</span>
+        <span style="color:#388e3c;">{% if cart.total_price >= 499 %}FREE{% else %}₹40{% endif %}</span>
+      </div>
+      <div style="border-top:1px dashed #e0e0e0; padding-top:12px; margin-top:5px; display:flex; justify-content:space-between; font-size:18px; font-weight:700;">
+        <span>Total Amount</span>
+        <span>₹{% if cart.total_price >= 499 %}{{ cart.total_price|floatformat:0 }}{% else %}{{ cart.total_price|add:40|floatformat:0 }}{% endif %}</span>
+      </div>
+      {% if cart.total_price < 499 %}
+      <div style="margin-top:10px; background:#e8f5e9; padding:10px; border-radius:4px; font-size:12px; color:#388e3c; text-align:center;">
+        Add ₹{{ 499|add:cart.total_price|floatformat:0 }} more to get FREE delivery!
+      </div>
+      {% endif %}
+      <a href="{% url 'checkout' %}" class="btn btn-primary" style="display:block; text-align:center; width:100%; padding:14px; margin-top:20px; font-size:15px; letter-spacing:1px;">
+        PLACE ORDER
+      </a>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<!-- EMPTY CART -->
+<div style="background:#fff; border-radius:4px; padding:60px; text-align:center;">
+  <div style="font-size:80px; margin-bottom:20px;">🛒</div>
+  <h2 style="font-size:24px; color:#212121; margin-bottom:10px;">Your cart is empty!</h2>
+  <p style="color:#878787; margin-bottom:25px;">Add items to it now.</p>
+  <a href="{% url 'product_list' %}" class="btn btn-primary" style="padding:14px 40px; font-size:15px;">Shop Now</a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateQty(itemId, qty) {
+  if (qty < 1) { if(confirm('Remove this item?')) window.location = `/cart/remove/${itemId}/`; return; }
+  fetch(`/cart/update/${itemId}/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/x-www-form-urlencoded'},
+    body: `quantity=${qty}`
+  }).then(r => r.json()).then(data => {
+    if (data.status === 'success') {
+      document.getElementById(`qty-${itemId}`).textContent = qty;
+      document.getElementById(`sub-${itemId}`).textContent = `₹${Math.round(data.subtotal)}`;
+      location.reload();
+    }
+  });
+}
+</script>
+{% endblock %}

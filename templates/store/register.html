@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Register - ShopKaro{% endblock %}
+
+{% block content %}
+<div style="max-width:850px; margin:30px auto; display:grid; grid-template-columns:1fr 1fr; border-radius:8px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.15);">
+  <div style="background:linear-gradient(135deg,#2874f0,#0c3694); padding:50px 40px; color:#fff;">
+    <h1 style="font-size:28px; font-weight:800; margin-bottom:15px;">🛒 ShopKaro</h1>
+    <p style="font-size:18px; line-height:1.5; opacity:.9;">Join India's fastest growing marketplace!</p>
+    <ul style="margin-top:25px; list-style:none; font-size:15px;">
+      <li style="margin-bottom:12px; opacity:.9;">✅ Millions of products</li>
+      <li style="margin-bottom:12px; opacity:.9;">✅ Best prices guaranteed</li>
+      <li style="margin-bottom:12px; opacity:.9;">✅ Free & fast delivery</li>
+      <li style="margin-bottom:12px; opacity:.9;">✅ Easy returns & refunds</li>
+      <li style="opacity:.9;">✅ Sell your products too!</li>
+    </ul>
+  </div>
+  <div style="background:#fff; padding:35px;">
+    <h2 style="font-size:22px; font-weight:700; margin-bottom:20px; color:#212121;">Create Account</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+        <input type="text" name="first_name" placeholder="First Name" style="padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+        <input type="text" name="last_name" placeholder="Last Name" style="padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <input type="text" name="username" placeholder="Username *" required style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <input type="email" name="email" placeholder="Email Address *" required style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <input type="password" name="password1" placeholder="Password *" required style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div style="margin-bottom:15px;">
+        <input type="password" name="password2" placeholder="Confirm Password *" required style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <!-- Seller option -->
+      <div style="margin-bottom:15px; padding:12px; background:#f8f9fa; border-radius:4px;" id="sellerSection">
+        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px;">
+          <input type="checkbox" name="is_seller" id="isSeller" onchange="toggleShopName()" style="width:16px; height:16px; accent-color:#2874f0;">
+          <span>I want to <strong>sell</strong> products on ShopKaro</span>
+        </label>
+        <div id="shopNameDiv" style="display:none; margin-top:10px;">
+          <input type="text" name="shop_name" placeholder="Your Shop Name" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; padding:13px; font-size:15px; letter-spacing:2px;">CREATE ACCOUNT</button>
+      <p style="text-align:center; margin-top:15px; font-size:13px; color:#878787;">
+        Already have an account? <a href="{% url 'login' %}" style="color:#2874f0; font-weight:600;">Login</a>
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleShopName() {
+  document.getElementById('shopNameDiv').style.display = document.getElementById('isSeller').checked ? 'block' : 'none';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}My Wishlist - ShopKaro{% endblock %}
+{% block content %}
+<h1 style="font-size:22px; font-weight:700; margin-bottom:15px;">My Wishlist ({{ wishlist_items|length }} items)</h1>
+{% if wishlist_items %}
+<div class="product-grid">
+  {% for item in wishlist_items %}
+  <div class="product-card" style="position:relative;">
+    <button onclick="removeFromWishlist({{ item.product.id }}, this)" 
+            style="position:absolute; top:8px; right:8px; background:#fff; border:none; cursor:pointer; font-size:20px; color:#ff6161; z-index:10; padding:5px; border-radius:50%; box-shadow:0 1px 4px rgba(0,0,0,.15);">❤️</button>
+    <a href="{{ item.product.get_absolute_url }}">
+      {% if item.product.images.first %}
+        <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
+      {% else %}
+        <div style="height:200px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:50px;">📦</div>
+      {% endif %}
+      <div class="product-card-body">
+        <h3>{{ item.product.name }}</h3>
+        {% if item.product.brand %}<div style="color:#878787; font-size:11px;">{{ item.product.brand }}</div>{% endif %}
+        <div class="product-price">
+          ₹{{ item.product.price|floatformat:0 }}
+          {% if item.product.original_price %}
+            <span class="original">₹{{ item.product.original_price|floatformat:0 }}</span>
+          {% endif %}
+        </div>
+        {% if not item.product.in_stock %}<span class="badge-oos">Out of Stock</span>{% endif %}
+      </div>
+    </a>
+    {% if item.product.in_stock %}
+    <div style="padding:0 10px 10px;">
+      <button onclick="addToCart({{ item.product.id }})" class="btn btn-secondary" style="width:100%; padding:8px;">Add to Cart</button>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div style="background:#fff; border-radius:4px; padding:60px; text-align:center;">
+  <div style="font-size:70px; margin-bottom:15px;">❤️</div>
+  <h2 style="font-size:22px; margin-bottom:10px;">Your wishlist is empty!</h2>
+  <p style="color:#878787; margin-bottom:20px;">Save items you love to your wishlist.</p>
+  <a href="{% url 'product_list' %}" class="btn btn-primary" style="padding:14px 40px;">Explore Products</a>
+</div>
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+<script>
+function removeFromWishlist(productId, btn) {
+  fetch(`/wishlist/toggle/${productId}/`, {
+    method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest'}
+  }).then(() => { btn.closest('.product-card').remove(); });
+}
+function addToCart(productId) {
+  fetch(`/cart/add/${productId}/`, {
+    method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/x-www-form-urlencoded'},
+    body: 'quantity=1'
+  }).then(r => r.json()).then(data => {
+    if (data.status === 'error' && data.redirect) { window.location = data.redirect; return; }
+    alert(data.message);
+  });
+}
+</script>
+{% endblock %}

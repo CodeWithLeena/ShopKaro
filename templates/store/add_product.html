@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Add Product - ShopKaro Seller{% endblock %}
+{% block content %}
+<div style="max-width:800px; margin:0 auto;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h1 style="font-size:22px; font-weight:700;">Add New Product</h1>
+    <a href="{% url 'seller_dashboard' %}" style="color:#2874f0; font-size:14px;">← Back to Dashboard</a>
+  </div>
+  <div style="background:#fff; border-radius:4px; padding:30px;">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Product Name *</label>
+        <input type="text" name="name" required placeholder="Enter product name" style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+        <div>
+          <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Category *</label>
+          <select name="category" required style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+            <option value="">Select Category</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% for sub in cat.subcategories.all %}
+            <option value="{{ sub.id }}">— {{ sub.name }}</option>
+            {% endfor %}
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Brand</label>
+          <input type="text" name="brand" placeholder="Brand name (optional)" style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+        </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Short Description</label>
+        <input type="text" name="short_description" placeholder="Brief product highlights (shown in listing)" style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Full Description *</label>
+        <textarea name="description" required rows="6" placeholder="Detailed product description..." style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none; resize:vertical;"></textarea>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:20px;">
+        <div>
+          <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Selling Price (₹) *</label>
+          <input type="number" name="price" required min="1" step="0.01" placeholder="0.00" style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+        </div>
+        <div>
+          <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">MRP (₹)</label>
+          <input type="number" name="original_price" min="1" step="0.01" placeholder="Original price" style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+        </div>
+        <div>
+          <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Stock Quantity *</label>
+          <input type="number" name="stock" required min="0" value="1" style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+        </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Tags (comma separated)</label>
+        <input type="text" name="tags" placeholder="e.g. casual, summer, cotton, men" style="width:100%; padding:12px 15px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div style="margin-bottom:25px;">
+        <label style="font-size:13px; font-weight:700; color:#212121; display:block; margin-bottom:8px;">Product Images *</label>
+        <div style="border:2px dashed #e0e0e0; border-radius:4px; padding:30px; text-align:center;" id="dropzone">
+          <div style="font-size:40px; margin-bottom:10px;">📸</div>
+          <p style="color:#878787; font-size:14px; margin-bottom:10px;">Upload product images (first image will be primary)</p>
+          <input type="file" name="images" multiple accept="image/*" style="font-size:13px;" id="imageInput">
+          <div id="imagePreview" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:15px;"></div>
+        </div>
+      </div>
+      <div style="display:flex; gap:15px;">
+        <button type="submit" class="btn btn-primary" style="padding:13px 35px; font-size:15px;">Submit Product</button>
+        <a href="{% url 'seller_dashboard' %}" class="btn btn-outline" style="padding:13px 25px;">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('imageInput').addEventListener('change', function() {
+  const preview = document.getElementById('imagePreview');
+  preview.innerHTML = '';
+  [...this.files].forEach((f, i) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const div = document.createElement('div');
+      div.style.cssText = 'position:relative; text-align:center;';
+      div.innerHTML = `<img src="${e.target.result}" style="width:80px; height:80px; object-fit:cover; border-radius:4px; border:2px solid ${i===0?'#2874f0':'#e0e0e0'};">
+        ${i===0?'<div style="font-size:11px; color:#2874f0; margin-top:3px;">Primary</div>':''}`;
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(f);
+  });
+});
+</script>
+{% endblock %}

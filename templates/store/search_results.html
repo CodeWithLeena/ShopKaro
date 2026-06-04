@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Search: {{ query }} - ShopKaro{% endblock %}
+
+{% block content %}
+<h1 style="font-size:20px; font-weight:700; margin-bottom:15px;">
+  Search results for "<span style="color:#2874f0;">{{ query }}</span>" — {{ total }} products
+</h1>
+
+{% if products %}
+<div class="product-grid">
+  {% for product in products %}
+  <div class="product-card" style="position:relative;">
+    {% if product.discount_percent > 0 %}
+      <span class="badge-discount" style="position:absolute; top:8px; left:8px; z-index:5;">{{ product.discount_percent }}% OFF</span>
+    {% endif %}
+    <a href="{{ product.get_absolute_url }}">
+      {% if product.images.first %}
+        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+      {% else %}
+        <div style="height:200px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:50px;">📦</div>
+      {% endif %}
+      <div class="product-card-body">
+        <h3>{{ product.name }}</h3>
+        {% if product.brand %}<div style="color:#878787; font-size:11px;">{{ product.brand }}</div>{% endif %}
+        {% if product.rating > 0 %}<div style="margin:4px 0;"><span class="product-rating">★ {{ product.rating }}</span></div>{% endif %}
+        <div class="product-price">
+          ₹{{ product.price|floatformat:0 }}
+          {% if product.original_price %}<span class="original">₹{{ product.original_price|floatformat:0 }}</span>{% endif %}
+        </div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div style="background:#fff; border-radius:4px; padding:60px; text-align:center;">
+  <div style="font-size:60px; margin-bottom:15px;">🔍</div>
+  <h2>No results found for "{{ query }}"</h2>
+  <p style="color:#878787; margin-top:10px;">Try different keywords</p>
+</div>
+{% endif %}
+{% endblock %}

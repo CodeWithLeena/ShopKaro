@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Add Address - ShopKaro{% endblock %}
+{% block content %}
+<div style="max-width:600px; margin:20px auto; background:#fff; border-radius:4px; padding:30px;">
+  <h1 style="font-size:20px; font-weight:700; margin-bottom:20px;">Add New Address</h1>
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.GET.next|default:'profile' }}">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">
+      <div>
+        <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">FULL NAME *</label>
+        <input type="text" name="name" required placeholder="Enter full name" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">PHONE *</label>
+        <input type="text" name="phone" required placeholder="10-digit mobile number" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+    </div>
+    <div style="margin-bottom:15px;">
+      <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">ADDRESS LINE 1 *</label>
+      <input type="text" name="address_line1" required placeholder="House No, Building, Street, Area" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+    </div>
+    <div style="margin-bottom:15px;">
+      <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">ADDRESS LINE 2</label>
+      <input type="text" name="address_line2" placeholder="Landmark (Optional)" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:15px;">
+      <div>
+        <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">PINCODE *</label>
+        <input type="text" name="pincode" required placeholder="6-digit pincode" maxlength="6" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">CITY *</label>
+        <input type="text" name="city" required placeholder="City" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">STATE *</label>
+        <input type="text" name="state" required placeholder="State" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+      </div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:12px; color:#878787; display:block; margin-bottom:8px;">ADDRESS TYPE</label>
+      <div style="display:flex; gap:20px;">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px;"><input type="radio" name="address_type" value="home" checked style="accent-color:#2874f0;"> 🏠 Home</label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px;"><input type="radio" name="address_type" value="work" style="accent-color:#2874f0;"> 🏢 Work</label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px;"><input type="radio" name="address_type" value="other" style="accent-color:#2874f0;"> 📍 Other</label>
+      </div>
+    </div>
+    <div style="margin-bottom:25px;">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px;">
+        <input type="checkbox" name="is_default" style="width:16px; height:16px; accent-color:#2874f0;">
+        Make this my default address
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary" style="padding:13px 30px; font-size:15px;">Save Address</button>
+    <a href="javascript:history.back()" style="margin-left:15px; color:#878787; font-size:14px;">Cancel</a>
+  </form>
+</div>
+{% endblock %}

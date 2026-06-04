@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Login - ShopKaro{% endblock %}
+
+{% block content %}
+<div style="max-width:850px; margin:30px auto; display:grid; grid-template-columns:1fr 1fr; border-radius:8px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.15);">
+  <!-- LEFT PANEL -->
+  <div style="background:linear-gradient(135deg,#2874f0,#0c3694); padding:50px 40px; color:#fff; display:flex; flex-direction:column; justify-content:space-between;">
+    <div>
+      <h1 style="font-size:28px; font-weight:800; margin-bottom:15px;">🛒 ShopKaro</h1>
+      <p style="font-size:18px; line-height:1.5; opacity:.9;">Login to access your account, track orders & explore millions of products!</p>
+    </div>
+    <img src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/login_img_c4a81e.png" alt="Login" style="width:100%; max-width:200px; margin-top:30px; align-self:center;" onerror="this.style.display='none'">
+  </div>
+  <!-- RIGHT PANEL -->
+  <div style="background:#fff; padding:40px;">
+    <h2 style="font-size:22px; font-weight:700; margin-bottom:25px; color:#212121;">Login</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
+      <div style="margin-bottom:20px;">
+        <input type="text" name="username" placeholder="Username or Email" required
+               style="width:100%; padding:12px 15px; border:none; border-bottom:2px solid #e0e0e0; font-size:15px; outline:none; transition:.2s;"
+               onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'">
+      </div>
+      <div style="margin-bottom:25px;">
+        <input type="password" name="password" placeholder="Password" required
+               style="width:100%; padding:12px 15px; border:none; border-bottom:2px solid #e0e0e0; font-size:15px; outline:none; transition:.2s;"
+               onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; font-size:15px; letter-spacing:2px;">LOGIN</button>
+    </form>
+    <p style="text-align:center; color:#878787; margin:20px 0; font-size:13px;">Don't have an account?</p>
+    <a href="{% url 'register' %}" class="btn btn-outline" style="display:block; width:100%; text-align:center; padding:12px; font-size:14px;">
+      Create New Account
+    </a>
+  </div>
+</div>
+{% endblock %}

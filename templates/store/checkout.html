@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - ShopKaro{% endblock %}
+
+{% block content %}
+<h1 style="font-size:22px; font-weight:700; margin-bottom:15px;">Checkout</h1>
+<div style="display:grid; grid-template-columns:1fr 340px; gap:15px;">
+  <div>
+    <!-- ADDRESS -->
+    <div style="background:#fff; border-radius:4px; padding:20px; margin-bottom:15px;">
+      <h2 style="font-size:16px; font-weight:700; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+        <span
+          style="background:#2874f0; color:#fff; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:13px;">1</span>
+        Delivery Address
+      </h2>
+      <form method="POST" id="checkoutForm">
+        {% csrf_token %}
+        {% if addresses %}
+        {% for addr in addresses %}
+        <label
+          style="display:flex; gap:12px; padding:12px; border:2px solid {% if addr == default_address %}#2874f0{% else %}#e0e0e0{% endif %}; border-radius:4px; cursor:pointer; margin-bottom:10px; transition:.2s;">
+          <input type="radio" name="address_id" value="{{ addr.id }}" {% if addr==default_address %}checked{% endif %}
+            style="margin-top:3px; accent-color:#2874f0;">
+          <div style="font-size:13px; line-height:1.6;">
+            <div style="font-weight:700;">{{ addr.name }} <span
+                style="background:#f1f3f6; padding:2px 8px; border-radius:3px; font-size:11px; font-weight:400; margin-left:5px;">{{
+                addr.address_type|upper }}</span></div>
+            <div>{{ addr.address_line1 }}{% if addr.address_line2 %}, {{ addr.address_line2 }}{% endif %}</div>
+            <div>{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</div>
+            <div style="color:#212121; font-weight:600; margin-top:3px;">📱 {{ addr.phone }}</div>
+          </div>
+        </label>
+        {% endfor %}
+        <a href="{% url 'add_address' %}?next=checkout" style="color:#2874f0; font-size:13px; font-weight:600;">+ Add
+          New Address</a>
+        {% else %}
+        <p style="color:#878787; margin-bottom:10px;">No addresses saved. Please add one:</p>
+        <a href="{% url 'add_address' %}?next=checkout" class="btn btn-outline">+ Add New Address</a>
+        {% endif %}
+      </form>
+    </div>
+
+    <!-- ORDER ITEMS -->
+    <div style="background:#fff; border-radius:4px; padding:20px; margin-bottom:15px;">
+      <h2 style="font-size:16px; font-weight:700; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+        <span
+          style="background:#2874f0; color:#fff; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:13px;">2</span>
+        Order Items ({{ items|length }})
+      </h2>
+      {% for item in items %}
+      <div style="display:flex; gap:15px; padding:12px 0; border-bottom:1px solid #f1f3f6;">
+        {% if item.product.images.first %}
+        <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}"
+          style="width:70px; height:70px; object-fit:contain;">
+        {% else %}
+        <div
+          style="width:70px; height:70px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:28px;">
+          📦</div>
+        {% endif %}
+        <div style="flex:1; font-size:13px;">
+          <div style="font-weight:600; margin-bottom:3px;">{{ item.product.name }}</div>
+          <div style="color:#878787;">Qty: {{ item.quantity }}</div>
+        </div>
+        <div style="font-size:15px; font-weight:700;">₹{{ item.subtotal|floatformat:0 }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- PAYMENT -->
+    <div style="background:#fff; border-radius:4px; padding:20px;">
+      <h2 style="font-size:16px; font-weight:700; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+        <span
+          style="background:#2874f0; color:#fff; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:13px;">3</span>
+        Payment Method
+      </h2>
+      <div style="display:flex; flex-direction:column; gap:10px;" id="paymentMethods">
+
+        <label
+          style="display:flex; align-items:center; gap:12px; padding:12px; border:2px solid #e0e0e0; border-radius:4px; cursor:pointer;">
+          <input type="radio" name="payment_method" value="cod" checked form="checkoutForm"
+            style="accent-color:#2874f0;">
+          <span>💵 Cash on Delivery (COD)</span>
+        </label>
+        <label
+          style="display:flex; align-items:center; gap:12px; padding:12px; border:2px solid #e0e0e0; border-radius:4px; cursor:pointer;">
+          <input type="radio" name="payment_method" value="upi" form="checkoutForm" style="accent-color:#2874f0;">
+          <span>📱 UPI Payment</span>
+        </label>
+        <label
+          style="display:flex; align-items:center; gap:12px; padding:12px; border:2px solid #e0e0e0; border-radius:4px; cursor:pointer;">
+          <input type="radio" name="payment_method" value="card" form="checkoutForm" style="accent-color:#2874f0;">
+          <span>💳 Credit / Debit Card</span>
+        </label>
+        <label
+          style="display:flex; align-items:center; gap:12px; padding:12px; border:2px solid #e0e0e0; border-radius:4px; cursor:pointer;">
+          <input type="radio" name="payment_method" value="netbanking" form="checkoutForm"
+            style="accent-color:#2874f0;">
+          <span>🏦 Net Banking</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICE SUMMARY -->
+  <div>
+    <div style="background:#fff; border-radius:4px; padding:20px; position:sticky; top:80px;">
+      <h3
+        style="font-size:14px; color:#878787; font-weight:400; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px; padding-bottom:10px; border-bottom:1px dashed #e0e0e0;">
+        Price Details</h3>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px;">
+        <span>MRP</span><span>₹{{ cart.total_price|floatformat:0 }}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px;">
+        <span>Discount</span><span style="color:#388e3c;">-₹0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px;">
+        <span>Delivery</span>
+        <span style="color:#388e3c;">{% if cart.total_price >= 499 %}FREE{% else %}₹40{% endif %}</span>
+      </div>
+      <div
+        style="border-top:1px dashed #e0e0e0; padding-top:12px; display:flex; justify-content:space-between; font-size:18px; font-weight:700;">
+        <span>Total</span>
+        <span>₹{% if cart.total_price >= 499 %}{{ cart.total_price|floatformat:0 }}{% else %}{{
+          cart.total_price|add:40|floatformat:0 }}{% endif %}</span>
+      </div>
+      <button type="submit" form="checkoutForm" class="btn btn-primary"
+        style="width:100%; padding:14px; margin-top:20px; font-size:15px; letter-spacing:2px;">
+        PLACE ORDER
+      </button>
+      <div style="margin-top:15px; font-size:12px; color:#878787; text-align:center;">
+        🔒 Safe and Secure Payments
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

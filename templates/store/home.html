@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}ShopKaro - India Ka Apna Bazaar | Online Shopping{% endblock %}
+
+{% block content %}
+
+<!-- HERO BANNER SLIDER -->
+{% if banners %}
+<div class="banner-slider" style="margin-bottom:15px">
+  <div class="banner-slides">
+    {% for banner in banners %}
+    <div class="banner-slide">
+      {% if banner.image %}
+        <img src="{{ banner.image.url }}" alt="{{ banner.title }}">
+      {% else %}
+        <div style="height:280px; background:linear-gradient(135deg,#2874f0,#0c3694); display:flex; align-items:center; justify-content:center;">
+          <div class="banner-text" style="position:static; transform:none; text-align:center; color:#fff;">
+            <h1 style="font-size:36px; font-weight:800;">{{ banner.title }}</h1>
+            <p style="font-size:18px; margin:10px 0 20px;">{{ banner.subtitle }}</p>
+            {% if banner.link %}<a href="{{ banner.link }}" class="banner-btn">{{ banner.button_text }}</a>{% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <button class="slider-btn prev">&#8249;</button>
+  <button class="slider-btn next">&#8250;</button>
+  <div class="slider-dots">
+    {% for banner in banners %}<div class="dot {% if forloop.first %}active{% endif %}"></div>{% endfor %}
+  </div>
+</div>
+{% else %}
+<!-- Default banner when no banners added -->
+<div style="background:linear-gradient(135deg,#2874f0,#0c3694); border-radius:4px; padding:50px; text-align:center; color:#fff; margin-bottom:15px;">
+  <h1 style="font-size:40px; font-weight:800; margin-bottom:10px;">🛒 ShopKaro</h1>
+  <p style="font-size:20px; margin-bottom:20px;">India Ka Apna Bazaar — Millions of products, best prices!</p>
+  <a href="{% url 'product_list' %}" style="background:#ff6161; color:#fff; padding:14px 40px; border-radius:4px; font-size:16px; font-weight:700;">Shop Now</a>
+</div>
+{% endif %}
+
+<!-- TOP CATEGORIES -->
+<div class="section" style="margin-bottom:15px;">
+  <div class="section-header">
+    <h2>Shop by Category</h2>
+    <a href="{% url 'product_list' %}">View All →</a>
+  </div>
+  <div class="section-body">
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:15px; text-align:center;">
+      {% for cat in top_categories %}
+      <a href="{% url 'category_products' cat.slug %}" style="display:flex; flex-direction:column; align-items:center; gap:8px; padding:15px 8px; border-radius:8px; transition:.2s; background:#f8f9fa;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
+        {% if cat.image %}
+          <img src="{{ cat.image.url }}" alt="{{ cat.name }}" style="width:60px; height:60px; object-fit:contain;">
+        {% else %}
+          <div style="width:60px; height:60px; background:linear-gradient(135deg,#2874f0,#0c3694); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px;">
+            {% if cat.icon %}<i class="fas {{ cat.icon }}"></i>{% else %}🏷️{% endif %}
+          </div>
+        {% endif %}
+        <span style="font-size:12px; font-weight:600; color:#212121;">{{ cat.name }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- DEALS OF THE DAY -->
+{% if deals %}
+<div class="section" style="margin-bottom:15px;">
+  <div class="section-header" style="background:linear-gradient(90deg,#2874f0,#0c3694); color:#fff; padding:15px 20px;">
+    <div style="display:flex; align-items:center; gap:15px;">
+      <h2 style="color:#fff; font-size:22px;">🔥 Deals of the Day</h2>
+      <span style="background:rgba(255,255,255,.2); color:#fff; padding:4px 10px; border-radius:15px; font-size:12px;">Limited Time Offers</span>
+    </div>
+    <a href="{% url 'product_list' %}?sort=discount" style="color:#fff; background:rgba(255,255,255,.2); padding:6px 16px; border-radius:4px; font-size:13px;">View All →</a>
+  </div>
+  <div class="section-body">
+    <div class="product-grid">
+      {% for product in deals %}
+      <a href="{{ product.get_absolute_url }}" class="product-card">
+        <div style="position:relative;">
+          {% if product.images.first %}
+            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+          {% else %}
+            <div style="height:180px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:50px;">🛍️</div>
+          {% endif %}
+          {% if product.discount_percent > 0 %}
+            <span class="badge-discount" style="position:absolute; top:8px; left:8px;">{{ product.discount_percent }}% OFF</span>
+          {% endif %}
+        </div>
+        <div class="product-card-body">
+          <h3>{{ product.name }}</h3>
+          <div style="margin:6px 0;">
+            <span class="product-rating">★ {{ product.rating }}</span>
+            <span class="text-gray" style="font-size:11px; margin-left:5px;">({{ product.total_reviews }})</span>
+          </div>
+          <div class="product-price">
+            ₹{{ product.price|floatformat:0 }}
+            {% if product.original_price %}
+              <span class="original">₹{{ product.original_price|floatformat:0 }}</span>
+              <span class="discount">{{ product.discount_percent }}% off</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- FEATURED PRODUCTS -->
+{% if featured_products %}
+<div class="section" style="margin-bottom:15px;">
+  <div class="section-header">
+    <h2>⭐ Featured Products</h2>
+    <a href="{% url 'product_list' %}">View All →</a>
+  </div>
+  <div class="section-body">
+    <div class="product-grid">
+      {% for product in featured_products %}
+      <a href="{{ product.get_absolute_url }}" class="product-card">
+        <div style="position:relative;">
+          {% if product.images.first %}
+            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+          {% else %}
+            <div style="height:180px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:50px;">📦</div>
+          {% endif %}
+          {% if product.discount_percent > 0 %}
+            <span class="badge-discount" style="position:absolute; top:8px; left:8px;">{{ product.discount_percent }}% OFF</span>
+          {% endif %}
+        </div>
+        <div class="product-card-body">
+          <h3>{{ product.name }}</h3>
+          {% if product.brand %}<div style="color:#878787; font-size:11px;">{{ product.brand }}</div>{% endif %}
+          <div style="margin:4px 0;">
+            {% if product.rating > 0 %}
+            <span class="product-rating">★ {{ product.rating }}</span>
+            {% endif %}
+          </div>
+          <div class="product-price">
+            ₹{{ product.price|floatformat:0 }}
+            {% if product.original_price %}
+              <span class="original">₹{{ product.original_price|floatformat:0 }}</span>
+            {% endif %}
+          </div>
+          {% if not product.in_stock %}<span class="badge-oos">Out of Stock</span>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- NEW ARRIVALS -->
+{% if new_arrivals %}
+<div class="section" style="margin-bottom:15px;">
+  <div class="section-header">
+    <h2>🆕 New Arrivals</h2>
+    <a href="{% url 'product_list' %}?sort=newest">View All →</a>
+  </div>
+  <div class="section-body">
+    <div class="product-grid">
+      {% for product in new_arrivals %}
+      <a href="{{ product.get_absolute_url }}" class="product-card">
+        <div style="position:relative;">
+          {% if product.images.first %}
+            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+          {% else %}
+            <div style="height:180px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:50px;">✨</div>
+          {% endif %}
+          <span class="badge-new" style="position:absolute; top:8px; left:8px;">NEW</span>
+          {% if product.discount_percent > 0 %}
+            <span class="badge-discount" style="position:absolute; top:8px; right:8px;">{{ product.discount_percent }}% OFF</span>
+          {% endif %}
+        </div>
+        <div class="product-card-body">
+          <h3>{{ product.name }}</h3>
+          {% if product.brand %}<div style="color:#878787; font-size:11px;">{{ product.brand }}</div>{% endif %}
+          <div class="product-price">
+            ₹{{ product.price|floatformat:0 }}
+            {% if product.original_price %}
+              <span class="original">₹{{ product.original_price|floatformat:0 }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- BESTSELLERS -->
+{% if bestseller_products %}
+<div class="section">
+  <div class="section-header">
+    <h2>🏆 Bestsellers</h2>
+    <a href="{% url 'product_list' %}?sort=popular">View All →</a>
+  </div>
+  <div class="section-body">
+    <div class="product-grid">
+      {% for product in bestseller_products %}
+      <a href="{{ product.get_absolute_url }}" class="product-card">
+        <div style="position:relative;">
+          {% if product.images.first %}
+            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+          {% else %}
+            <div style="height:180px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; font-size:50px;">🏆</div>
+          {% endif %}
+          {% if product.discount_percent > 0 %}
+            <span class="badge-discount" style="position:absolute; top:8px; left:8px;">{{ product.discount_percent }}% OFF</span>
+          {% endif %}
+        </div>
+        <div class="product-card-body">
+          <h3>{{ product.name }}</h3>
+          <div style="margin:4px 0;">
+            {% if product.rating > 0 %}
+            <span class="product-rating">★ {{ product.rating }}</span>
+            <span class="text-gray" style="font-size:11px; margin-left:5px;">{{ product.total_sold }}+ sold</span>
+            {% endif %}
+          </div>
+          <div class="product-price">₹{{ product.price|floatformat:0 }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- PROMO BANNERS -->
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-top:15px;">
+  <div style="background:linear-gradient(135deg,#ff6b6b,#ee5a24); border-radius:8px; padding:25px; color:#fff; text-align:center;">
+    <div style="font-size:40px; margin-bottom:10px;">🚚</div>
+    <h3 style="font-size:16px; font-weight:700;">FREE DELIVERY</h3>
+    <p style="font-size:13px; opacity:.9; margin-top:5px;">On orders above ₹499</p>
+  </div>
+  <div style="background:linear-gradient(135deg,#a29bfe,#6c5ce7); border-radius:8px; padding:25px; color:#fff; text-align:center;">
+    <div style="font-size:40px; margin-bottom:10px;">🔒</div>
+    <h3 style="font-size:16px; font-weight:700;">SECURE PAYMENT</h3>
+    <p style="font-size:13px; opacity:.9; margin-top:5px;">100% Secure Transactions</p>
+  </div>
+  <div style="background:linear-gradient(135deg,#55efc4,#00b894); border-radius:8px; padding:25px; color:#fff; text-align:center;">
+    <div style="font-size:40px; margin-bottom:10px;">↩️</div>
+    <h3 style="font-size:16px; font-weight:700;">EASY RETURNS</h3>
+    <p style="font-size:13px; opacity:.9; margin-top:5px;">7-day hassle-free returns</p>
+  </div>
+</div>
+
+{% endblock %}
