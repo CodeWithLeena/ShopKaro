@@ -65,7 +65,6 @@
         <div style="margin-bottom:20px;">
           <label style="font-size:12px; color:#878787; display:block; margin-bottom:8px;">GENDER</label>
           <div style="display:flex; gap:20px;">
-            {% for val, label in "male,Male|female,Female|other,Other"|split:"|" %}{% endfor %}
             <label style="display:flex; align-items:center; gap:6px; font-size:14px; cursor:pointer;">
               <input type="radio" name="gender" value="male" {% if user_profile.gender == 'male' %}checked{% endif %} style="accent-color:#2874f0;"> Male
             </label>
