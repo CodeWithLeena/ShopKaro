@@ -4,36 +4,48 @@
 <div style="display:grid; grid-template-columns:280px 1fr; gap:15px;">
   <!-- SIDEBAR -->
   <div>
-    <div style="background:#fff; border-radius:4px; padding:25px; text-align:center; margin-bottom:10px;">
+    <div style="background:#fff; border-radius:4px; padding: 25px; text-align:center; margin-bottom:10px;">
       {% if user_profile.profile_pic %}
-        <img src="{{ user_profile.profile_pic.url }}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
+      <img src="{{ user_profile.profile_pic.url }}"
+        style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
       {% else %}
-        <div style="width:80px; height:80px; border-radius:50%; background:#2874f0; color:#fff; font-size:32px; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;">
-          {{ user.first_name.0|default:user.username.0|upper }}
-        </div>
+      <div
+        style="width:80px; height:80px; border-radius:50%; background:#2874f0; color:#fff; font-size:32px; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;">
+        {{ user.first_name.0|default:user.username.0|upper }}
+      </div>
       {% endif %}
       <div style="font-size:16px; font-weight:700;">{{ user.get_full_name|default:user.username }}</div>
       <div style="color:#878787; font-size:13px;">{{ user.email }}</div>
     </div>
     <div style="background:#fff; border-radius:4px; overflow:hidden;">
-      <a href="{% url 'profile' %}" style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121; font-weight:600; background:#e3f2fd;">
+      <a href="{% url 'profile' %}"
+        style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121; font-weight:600; background:#e3f2fd;">
         👤 My Profile
       </a>
-      <a href="{% url 'orders' %}" style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
-        📦 My Orders <span style="margin-left:auto; background:#2874f0; color:#fff; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:11px;">{{ orders_count }}</span>
+      <a href="{% url 'orders' %}"
+        style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
+        📦 My Orders <span
+          style="margin-left:auto; background:#2874f0; color:#fff; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:11px;">{{
+          orders_count }}</span>
       </a>
-      <a href="{% url 'wishlist' %}" style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
-        ❤️ Wishlist <span style="margin-left:auto; background:#ff6161; color:#fff; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:11px;">{{ wishlist_count }}</span>
+      <a href="{% url 'wishlist' %}"
+        style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
+        ❤️ Wishlist <span
+          style="margin-left:auto; background:#ff6161; color:#fff; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:11px;">{{
+          wishlist_count }}</span>
       </a>
-      <a href="{% url 'add_address' %}" style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
+      <a href="{% url 'add_address' %}"
+        style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
         📍 Manage Addresses
       </a>
       {% if user_profile.is_seller %}
-      <a href="{% url 'seller_dashboard' %}" style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
+      <a href="{% url 'seller_dashboard' %}"
+        style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid #f1f3f6; font-size:14px; color:#212121;">
         🏪 Seller Dashboard
       </a>
       {% endif %}
-      <a href="{% url 'logout' %}" style="display:flex; align-items:center; gap:12px; padding:14px 20px; font-size:14px; color:#d32f2f;">
+      <a href="{% url 'logout' %}"
+        style="display:flex; align-items:center; gap:12px; padding:14px 20px; font-size:14px; color:#d32f2f;">
         🚪 Logout
       </a>
     </div>
@@ -41,38 +53,47 @@
   <!-- MAIN -->
   <div>
     <div style="background:#fff; border-radius:4px; padding:25px; margin-bottom:15px;">
-      <h2 style="font-size:18px; font-weight:700; margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #f1f3f6;">Personal Information</h2>
+      <h2
+        style="font-size:18px; font-weight:700; margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #f1f3f6;">
+        Personal Information</h2>
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">
           <div>
             <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">FIRST NAME</label>
-            <input type="text" name="first_name" value="{{ user.first_name }}" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+            <input type="text" name="first_name" value="{{ user.first_name }}"
+              style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
           </div>
           <div>
             <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">LAST NAME</label>
-            <input type="text" name="last_name" value="{{ user.last_name }}" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+            <input type="text" name="last_name" value="{{ user.last_name }}"
+              style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
           </div>
         </div>
         <div style="margin-bottom:15px;">
           <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">EMAIL</label>
-          <input type="email" name="email" value="{{ user.email }}" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+          <input type="email" name="email" value="{{ user.email }}"
+            style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
         </div>
         <div style="margin-bottom:15px;">
           <label style="font-size:12px; color:#878787; display:block; margin-bottom:5px;">PHONE</label>
-          <input type="text" name="phone" value="{{ user_profile.phone }}" placeholder="+91 XXXXX XXXXX" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
+          <input type="text" name="phone" value="{{ user_profile.phone }}" placeholder="+91 XXXXX XXXXX"
+            style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:4px; font-size:14px; outline:none;">
         </div>
         <div style="margin-bottom:20px;">
           <label style="font-size:12px; color:#878787; display:block; margin-bottom:8px;">GENDER</label>
           <div style="display:flex; gap:20px;">
             <label style="display:flex; align-items:center; gap:6px; font-size:14px; cursor:pointer;">
-              <input type="radio" name="gender" value="male" {% if user_profile.gender == 'male' %}checked{% endif %} style="accent-color:#2874f0;"> Male
+              <input type="radio" name="gender" value="male" {% if user_profile.gender=='male' %}checked{% endif %}
+                style="accent-color:#2874f0;"> Male
             </label>
             <label style="display:flex; align-items:center; gap:6px; font-size:14px; cursor:pointer;">
-              <input type="radio" name="gender" value="female" {% if user_profile.gender == 'female' %}checked{% endif %} style="accent-color:#2874f0;"> Female
+              <input type="radio" name="gender" value="female" {% if user_profile.gender=='female' %}checked{% endif %}
+                style="accent-color:#2874f0;"> Female
             </label>
             <label style="display:flex; align-items:center; gap:6px; font-size:14px; cursor:pointer;">
-              <input type="radio" name="gender" value="other" {% if user_profile.gender == 'other' %}checked{% endif %} style="accent-color:#2874f0;"> Other
+              <input type="radio" name="gender" value="other" {% if user_profile.gender=='other' %}checked{% endif %}
+                style="accent-color:#2874f0;"> Other
             </label>
           </div>
         </div>
@@ -91,8 +112,12 @@
       </div>
       {% for addr in addresses %}
       <div style="border:1px solid #e0e0e0; border-radius:4px; padding:15px; margin-bottom:10px; position:relative;">
-        {% if addr.is_default %}<span style="position:absolute; top:10px; right:10px; background:#e3f2fd; color:#2874f0; padding:2px 8px; border-radius:3px; font-size:11px; font-weight:600;">DEFAULT</span>{% endif %}
-        <div style="font-size:14px; font-weight:700; margin-bottom:5px;">{{ addr.name }} <span style="background:#f1f3f6; padding:2px 6px; border-radius:3px; font-size:11px; font-weight:400;">{{ addr.address_type|upper }}</span></div>
+        {% if addr.is_default %}<span
+          style="position:absolute; top:10px; right:10px; background:#e3f2fd; color:#2874f0; padding:2px 8px; border-radius:3px; font-size:11px; font-weight:600;">DEFAULT</span>{%
+        endif %}
+        <div style="font-size:14px; font-weight:700; margin-bottom:5px;">{{ addr.name }} <span
+            style="background:#f1f3f6; padding:2px 6px; border-radius:3px; font-size:11px; font-weight:400;">{{
+            addr.address_type|upper }}</span></div>
         <div style="font-size:13px; color:#212121; line-height:1.6;">
           {{ addr.address_line1 }}{% if addr.address_line2 %}, {{ addr.address_line2 }}{% endif %}<br>
           {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}<br>
