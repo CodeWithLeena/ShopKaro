@@ -24,12 +24,12 @@ Products{% endif %} - ShopKaro
           <select name="sort"
             style="width:100%; padding:8px; border:1px solid #e0e0e0; border-radius:4px; font-size:13px;"
             onchange="this.form.submit()">
-            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
-            <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
-            <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
-            <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Best Rating</option>
-            <option value="popular" {% if sort_by == 'popular' %}selected{% endif %}>Most Popular</option>
-            <option value="discount" {% if sort_by == 'discount' %}selected{% endif %}>Biggest Discount</option>
+            <option value="newest" {% if sort_by=='newest' %}selected{% endif %}>Newest First</option>
+            <option value="price_low" {% if sort_by=='price_low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_high" {% if sort_by=='price_high' %}selected{% endif %}>Price: High to Low</option>
+            <option value="rating" {% if sort_by=='rating' %}selected{% endif %}>Best Rating</option>
+            <option value="popular" {% if sort_by=='popular' %}selected{% endif %}>Most Popular</option>
+            <option value="discount" {% if sort_by=='discount' %}selected{% endif %}>Biggest Discount</option>
           </select>
         </div>
 
@@ -40,7 +40,7 @@ Products{% endif %} - ShopKaro
           {% for cat in categories %}
           {% if not cat.parent %}
           <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px; cursor:pointer; font-size:13px;">
-            <input type="radio" name="category" value="{{ cat.slug }}" {% if current_category == cat %}checked{% endif %}
+            <input type="radio" name="category" value="{{ cat.slug }}" {% if current_category==cat %}checked{% endif %}
               onchange="this.form.submit()" style="accent-color:#2874f0;">
             {{ cat.name }}
           </label>
@@ -66,7 +66,7 @@ Products{% endif %} - ShopKaro
           <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; color:#878787; margin-bottom:10px;">
             Customer Rating</h4>
           <label style="display:flex; align-items:center; gap:8px; margin-bottom:6px; cursor:pointer; font-size:13px;">
-            <input type="radio" name="rating" value="{{ r }}" {% if request.GET.rating == r %}checked{% endif %}
+            <input type="radio" name="rating" value="{{ r }}" {% if request.GET.rating==r %}checked{% endif %}
               onchange="this.form.submit()" style="accent-color:#2874f0;">
             <span style="color:#ff9f00;">{{ r }}★</span> & Above
           </label>
