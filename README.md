@@ -3,6 +3,30 @@
 
 ---
 
+## 🌐 LIVE DEMO
+👉 https://codewithleena.pythonanywhere.com
+
+---
+
+## 📸 SCREENSHOTS
+
+### 🏠 Homepage
+![Homepage](homepage.png)
+
+### 🛍️ Deals & Products
+![Products](products.png)
+
+### 📄 Product Detail
+![Product Detail](product-detail.png)
+
+### 🛒 Cart
+![Cart](cart.png)
+
+### 💳 Checkout
+![Checkout](checkout.png)
+
+---
+
 ## 📋 YE WEBSITE MEIN KYA HAI?
 
 ✅ **Homepage** - Banner slider, categories, deals, featured products  
